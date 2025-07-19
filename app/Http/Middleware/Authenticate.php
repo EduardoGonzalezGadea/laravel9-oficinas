@@ -2,22 +2,33 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Middleware\Authenticate as BaseAuthenticate;
 
-class Authenticate extends Middleware
+class Authenticate extends BaseAuthenticate
 {
-    /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     */
-    protected function redirectTo($request) 
+    public function handle($request, Closure $next, ...$guards)
     {
-        // Para API, devolver null (respuesta JSON)
-        if ($request->expectsJson() || $request->is('api/*')) {
-            return null;
+        // Excluir rutas públicas explícitamente
+        if ($request->routeIs('welcome', 'ingresar', 'login.post')) {
+            return $next($request);
         }
 
-        // Redirigir a la ruta de login (usando el nombre correcto)
-        return route('ingresar');
+        // Forzar middleware web para todas las rutas no API
+        if (!$request->expectsJson() && !$request->is('api/*')) {
+            $request->headers->set('Accept', 'text/html');
+        }
+
+        try {
+            $this->authenticate($request, $guards);
+        } catch (\Illuminate\Auth\AuthenticationException $e) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Unauthenticated'], 401);
+            }
+            return redirect()->guest(route('ingresar'));
+        }
+
+        return $next($request);
     }
 }

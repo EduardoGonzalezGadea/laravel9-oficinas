@@ -10,9 +10,10 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')->except(['logout', 'apiLogout']);
     }
 
+    // Métodos web
     public function showLoginForm()
     {
         return view('auth.login');
@@ -22,7 +23,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'username' => 'required|string',
-            'password' => 'required|string',
+            'password' => 'required|string'
         ]);
 
         if (Auth::attempt($credentials, $request->remember)) {
@@ -35,11 +36,25 @@ class AuthController extends Controller
         ])->onlyInput('username');
     }
 
-    public function logout(Request $request)
+    // Métodos API
+    public function apiLogin(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect(route('welcome'));
+        $credentials = $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'message' => 'Credenciales inválidas'
+            ], 401);
+        }
+
+        $token = Auth::user()->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer'
+        ]);
     }
 }

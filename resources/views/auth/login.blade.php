@@ -60,9 +60,6 @@
                     </div>
                 </form>
             </div>
-            <div class="card-footer bg-white text-center">
-                <small class="text-muted">Si tiene problemas para acceder, contacte al Departamento de Sistemas</small>
-            </div>
         </div>
     </div>
 </div>
