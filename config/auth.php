@@ -97,6 +97,8 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+
+        'password_timeout' => 10800,
     ],
 
     /*

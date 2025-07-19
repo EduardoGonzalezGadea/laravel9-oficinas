@@ -1,0 +1,57 @@
+/* Estilos base */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Barra de navegación */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Tarjetas */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    font-weight: 600;
+}
+
+/* Botones */
+.btn {
+    border-radius: 0.25rem;
+    font-weight: 500;
+}
+
+/* Formularios */
+.form-control {
+    border-radius: 0.25rem;
+}
+
+/* Colores institucionales */
+.bg-primary {
+    background-color: #003366 !important; /* Azul MI */
+}
+
+.text-primary {
+    color: #003366 !important;
+}
+
+.btn-primary {
+    background-color: #003366;
+    border-color: #003366;
+}
+
+.btn-primary:hover {
+    background-color: #002244;
+    border-color: #002244;
+}

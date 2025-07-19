@@ -1,24 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+// Ruta de bienvenida
+Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
 
-Route::get('/', function () {
-    return view('welcome');
+// Rutas de autenticación (para invitados)
+Route::middleware('guest')->group(function () {
+    Route::get('/ingresar', [AuthController::class, 'showLoginForm'])->name('ingresar');
+    Route::post('/ingresar', [AuthController::class, 'login'])->name('login.post');
 });
 
-Route::get('/livewire/livewire.js', [\Livewire\Controllers\LivewireJavaScriptAssets::class, 'source']);
-
-Route::get('/test', function () {
-    return view('livewire.test-component');
+// Rutas protegidas (para autenticados)
+Route::middleware('auth')->group(function () {
+    Route::post('/cerrar-sesion', [AuthController::class, 'logout'])->name('cerrar-sesion');
+    Route::get('/panel', [HomeController::class, 'dashboard'])->name('panel');
 });
